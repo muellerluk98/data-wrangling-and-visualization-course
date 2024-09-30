@@ -57,8 +57,30 @@ data_amp_raw <- read_csv("../data/raw/data_amp_raw.csv") |>
 Clean the demographics data so that summaries of age and gender can be made in the analysis.
 
 ```{r}
+colnames(dat_age_gender)
+dat_age_gender <- data_demographics_raw %>% 
+  select(subject, trialcode, response)
 
-#dat_age_gender <- data_demographics_raw 
+dat_age_gender <- data_demographics_raw %>% 
+  rename(unique_id = subject, item = trialcode) %>% 
+  select(unique_id, item, response)
+
+temp <- dat_age_gender %>% 
+  filter(item == "age")
+
+
+dat_age_gender <- data_demographics_raw %>% 
+  rename(unique_id = subject, item = trialcode) %>% 
+  select(unique_id, item, response) %>% 
+  filter(item == "age")
+
+
+temp2 <- dat_age_gender %>% 
+  mutate(unique_id_2 = unique_id * 2)
+
+temp2 <- dat_age_gender %>% 
+  mutate(response = str_remove_all(response, "\\D"), 
+         response = na_if(response, ""))
 
 ```
 

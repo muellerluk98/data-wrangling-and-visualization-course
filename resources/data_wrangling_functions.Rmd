@@ -135,6 +135,7 @@ Useful arguments:
 ```
 
 ## filter
+Filter is for rows (horizonal)
 
 ```{r}
 
@@ -158,8 +159,11 @@ slice(mtcars, 2:n()) # this should have 31 rows
 ```
 
 ## select
+Does choose some of the variables. You can also exclude some variables with select, there you would have to add a minus sign. If you want exclude several variables you have to type !c(). Select is for columns (vertical)
 
 ```{r}
+
+sele
 
 # dplyr::select()
 
