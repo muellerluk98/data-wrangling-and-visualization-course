@@ -57,32 +57,77 @@ data_amp_raw <- read_csv("../data/raw/data_amp_raw.csv") |>
 Clean the demographics data so that summaries of age and gender can be made in the analysis.
 
 ```{r}
-colnames(dat_age_gender)
-dat_age_gender <- data_demographics_raw %>% 
-  select(subject, trialcode, response)
 
 dat_age_gender <- data_demographics_raw %>% 
-  rename(unique_id = subject, item = trialcode) %>% 
-  select(unique_id, item, response)
-
-temp <- dat_age_gender %>% 
-  filter(item == "age")
-
-
-dat_age_gender <- data_demographics_raw %>% 
-  rename(unique_id = subject, item = trialcode) %>% 
-  select(unique_id, item, response) %>% 
-  filter(item == "age")
-
-
-temp2 <- dat_age_gender %>% 
-  mutate(unique_id_2 = unique_id * 2)
-
-temp2 <- dat_age_gender %>% 
-  mutate(response = str_remove_all(response, "\\D"), 
-         response = na_if(response, ""))
+  select(trialcode, response)
 
 ```
+
+```{r}
+gender_data_raw <- dat_age_gender %>%
+  filter(trialcode == "gender") %>%
+  select(response) %>%
+  rename(gender = response)
+
+head(gender_data)
+```
+
+```{r}
+gender_data_clean <- gender_data_raw %>% 
+  mutate(gender = ifelse(is.na(as.numeric(gender)), gender, NA))
+
+head(gender_data_clean)
+```
+
+```{r}
+
+gender_data_cleaner <- gender_data_clean %>%
+  mutate(gender = case_when(
+    gender %in% c("Male", "male", "MALE") ~ 1,
+    gender %in% c("Female", "female", "FEMALE") ~ 2,
+    TRUE ~ as.numeric(gender)))
+
+head(gender_data_cleaner)
+
+```
+
+```{r}
+
+gender_summary <- gender_data_cleaner %>%
+  summarise(
+    count_1 = sum(gender == 1, na.rm = TRUE),
+    count_2 = sum(gender == 2, na.rm = TRUE),
+    count_NA = sum(is.na(gender)),
+    count_total = sum(is.na(gender) + gender == 1 | 2))
+
+
+gender_summary
+
+```
+
+```{r}
+
+gender_summary <- data_demographics_raw %>% 
+  select(trialcode, response) %>%
+  filter(trialcode == "gender") %>%
+  select(response) %>%
+  rename(gender = response) %>%
+  mutate(gender = ifelse(is.na(as.numeric(gender)), gender, NA)) %>%
+  mutate(gender = ifelse(gender %in% c("Male", "male", "MALE"), 1,
+                         ifelse(gender %in% c("Female", "female", "FEMALE"), 2, NA))) %>%
+  summarise(
+    count_1 = sum(gender == 1, na.rm = TRUE),
+    count_2 = sum(gender == 2, na.rm = TRUE),
+    count_NA = sum(is.na(gender)),
+    count_total = sum(gender %in% c(1, 2), na.rm = TRUE)
+  )
+
+
+head(gender_summary)
+                
+                         
+```
+
 
 # Exclusions / data quality
 
