@@ -89,20 +89,54 @@ Useful arguments:
 ```
 
 ## dir.create
+Die Funktion dir.create() in R wird verwendet, um ein neues Verzeichnis (Ordner) auf dem Dateisystem zu erstellen. Sie ist besonders nützlich, wenn du Daten oder Ergebnisse in einem neuen Ordner speichern möchtest, um deine Arbeitsumgebung oder dein Projekt übersichtlich zu gestalten.
+
+Die Funktion dir.create() ist besonders nützlich in der Datenanalyse, wenn du Ergebnisse (wie Grafiken, Tabellen oder Reports) in einem neuen Ordner speichern möchtest, um Ordnung in deinem Projekt zu halten. Außerdem kannst du Verzeichnisse dynamisch erstellen, wenn du z.B. in einem Skript festlegst, dass für jeden Monat oder jede Auswertung automatisch ein eigener Ordner generiert wird.
 
 ```{r}
 
 # dir.create()
 
+# Erstellen eines neuen Verzeichnisses "Projektdaten"
+dir.create("Projektdaten")
+
+# Überprüfen, ob das Verzeichnis erfolgreich erstellt wurde
+if (dir.exists("Projektdaten")) {
+   print("Das Verzeichnis wurde erfolgreich erstellt.")
+} else {
+   print("Das Verzeichnis konnte nicht erstellt werden.")
+}
+
+
 ```
 
 ## colnames & dput
+
+Die Funktion colnames() wird in R verwendet, um die Spaltennamen einer Matrix, eines Datenrahmens oder eines anderen R-Objekts, das eine tabellarische Struktur hat, zu erhalten oder zu setzen.
+
+Die Funktion dput() gibt eine R-freundliche Darstellung eines Objekts aus, die du direkt in dein R-Skript kopieren und ausführen kannst, um das Objekt erneut zu erstellen. Das ist besonders nützlich, wenn du ein Objekt exportieren oder weitergeben möchtest.
+
+colnames(): Nützlich zum Abrufen und Festlegen der Spaltennamen eines Datenrahmens oder einer Matrix.
+
+dput(): Ermöglicht es, R-Objekte als reproduzierbaren R-Code auszugeben.
 
 ```{r}
 
 # colnames()
 
+df <- data.frame(Age = c(25, 30), Name = c("Anna", "Bert"))
+colnames(df) # Anzeige der Spaltennamen
+
+colnames(df) <- c("Alter", "Vorname")  # Hinzufügen von zusätzlichen Spalten
+
+colnames(df)
+
+
+
 # dput(colnames())
+
+dput(colnames(df)) # Dies gibt die Spaltennamen als R-freundlichen Code aus, den du in anderen Skripten oder in einer neuen R-Sitzung verwenden kannst.
+
 
 ```
 
@@ -110,35 +144,134 @@ Useful arguments:
 
 ## the pipe: `%>%` or `|>`
 
+Der %>% Operator wird von dem Paket magrittr bzw. häufig auch über das dplyr-Paket bereitgestellt. Dieser Operator leitet den Output einer Funktion als Input in die nächste Funktion weiter, ohne dass du den Zwischenschritt explizit speichern musst. --> fördert die Lesbarkeit des Codes
+
+Statt den Output jedes einzelnen Schritts zu speichern, erlaubt der Pipe-Operator das direkte Weiterleiten der Daten zum nächsten Schritt.
+
+Der |> Operator ist der neue, native Pipe-Operator in Base R und wurde mit R Version 4.1 eingeführt. Er hat eine ähnliche Funktion wie %>%, ist aber in der R-Umgebung nativ integriert, sodass du kein zusätzliches Paket wie dplyr oder magrittr benötigst.
+
+Wichtige Unterschiede zwischen %>% und |>:
+Kompatibilität: %>% stammt aus dem Paket magrittr und ist nicht Teil von Base R, während |> nativ in R 4.1 eingeführt wurde.
+Verhalten: Der %>%-Operator bietet einige zusätzliche Features wie z.B. das automatische Einfügen des Platzhalters . für fehlende Argumente. Der native Pipe-Operator |> erfordert explizitere Funktionsaufrufe.
+
+
 ```{r}
 
 # %>%
 
+# Beispiel mit %>%
+df <- data.frame(Zahlen = 1:5)
+
+df %>%
+  mutate(Quadrat = Zahlen^2) %>%
+  filter(Quadrat > 10)
+
+
 # |>
+
+# Beispiel mit |>
+df <- data.frame(Zahlen = 1:5)
+
+df |>
+  transform(Quadrat = Zahlen^2) |>
+  subset(Quadrat > 10)
+
 
 ```
 
 ## round_half_up
 
+Die Funktion round_half_up(), stammt aus dem janitor-Paket in R. Diese Funktion wird verwendet, um numerische Werte nach dem sogenannten "Round-Half-Up" Verfahren zu runden. Dabei wird bei einer Dezimalstelle von 5 immer aufgerundet, was dem in der Mathematik häufig verwendeten Rundungsprinzip entspricht.
+
+Rundungsverhalten:
+Bei der herkömmlichen R-Funktion round() wird bei einer Dezimalstelle von 5 je nach der vorherigen Zahl gerundet (abgerundet bei geraden Zahlen, aufgerundet bei ungeraden Zahlen, dies nennt man "Banker's Rounding").
+Die round_half_up() Funktion rundet hingegen immer nach oben, wenn die zu rundende Dezimalstelle 5 oder größer ist. Dies entspricht dem Standard, den wir im Alltag gewohnt sind.
+
+Die Funktion ist besonders nützlich, wenn du präzise Rundergebnisse benötigst, die nicht dem "Banker's Rounding" folgen sollen, sondern immer nach den gängigen mathematischen Rundungsregeln.
+
 ```{r}
 
 # janitor::round_half_up()
+
+# Mit der Standard-R-Funktion round()
+round(2.5)  # Gibt 2 zurück (Banker's Rounding)
+round(3.5)  # Gibt 4 zurück
+
+# Mit round_half_up aus dem janitor Paket
+round_half_up(2.5)  # Gibt 3 zurück
+round_half_up(3.5)  # Gibt 4 zurück
+
 
 ```
 
 ## clean_names
 
+Die Funktion clean_names() aus dem Paket janitor ist eine sehr nützliche Funktion in R, die häufig verwendet wird, um die Spaltennamen eines DataFrames oder einer Tabelle zu bereinigen. Dies ist besonders hilfreich, wenn du mit Daten arbeitest, die aus externen Quellen stammen und möglicherweise problematische Spaltennamen enthalten (z.B. Leerzeichen, Sonderzeichen oder Großbuchstaben).
+
+Die clean_names()-Funktion standardisiert und bereinigt die Spaltennamen eines DataFrames. Sie entfernt Leerzeichen, Sonderzeichen und konvertiert Großbuchstaben in Kleinbuchstaben, um konsistente und maschinenfreundliche Spaltennamen zu erstellen.
+
 ```{r}
 
 # janitor::clean_names()
+
+clean_names(df)
+
+# Installieren und laden des janitor-Pakets, falls nicht bereits geschehen
+# install.packages("janitor")
+library(janitor)
+
+# Ein DataFrame mit unübersichtlichen Spaltennamen
+df <- data.frame(
+  `Vorname ` = c("Anna", "Bert"),  # Leerzeichen am Ende
+  `Alter (%)` = c(28, 34),         # Sonderzeichen
+  `Land` = c("DE", "AT"),
+  check.names = FALSE              # Damit R die Namen nicht automatisch anpasst
+)
+
+# Spaltennamen vor der Bereinigung anzeigen
+colnames(df)
+
+# Bereinigen der Spaltennamen
+df_clean <- clean_names(df)
+
+# Spaltennamen nach der Bereinigung anzeigen
+colnames(df_clean)
+
 
 ```
 
 ## filter
 
+Die Funktion filter() aus dem dplyr-Paket ist eine der wichtigsten Funktionen in der Datenmanipulation in R. Sie wird verwendet, um Zeilen aus einem DataFrame basierend auf bestimmten Bedingungen auszuwählen oder zu "filtern".
+
+Die Funktion filter() erlaubt es dir, Zeilen aus einem DataFrame auszuwählen, die bestimmten Bedingungen entsprechen. Das ist besonders hilfreich, wenn du große Datensätze hast und nur bestimmte Datenreihen für eine Analyse verwenden möchtest.
+
 ```{r}
 
 # dplyr::filter()
+
+# Ein Beispiel-Datenrahmen
+df <- data.frame(Name = c("Anna", "Bert", "Clara", "David"),
+                 Alter = c(28, 34, 23, 45),
+                 Land = c("DE", "AT", "CH", "DE"))
+
+
+# Anwenden der filter-Funktion
+df_filtered <- filter(df, Alter > 30)
+
+# Ausgabe des gefilterten DataFrames
+df_filtered
+
+df_filtered <- filter(df, Alter > 30, Land == "DE")
+
+# Ausgabe des gefilterten DataFrames
+df_filtered
+
+df %>%
+  filter(Alter > 30, Land == "DE")
+
+
+
 
 ```
 
@@ -148,6 +281,10 @@ Slice is for retaining or dropping rows from a df.
 
 We might use it just after reading in files if there are junk rows at the header.
 
+Die Funktion slice() aus dem Paket dplyr ist eine weitere nützliche Funktion zur Datenmanipulation in R. Sie wird verwendet, um spezifische Zeilen eines DataFrames zu extrahieren oder zu behalten. Dies ist besonders hilfreich, wenn du gezielt bestimmte Zeilen (oder einen Bereich von Zeilen) aus deinem DataFrame auswählen möchtest.
+
+Mit slice() kannst du Zeilen nach ihrer Position auswählen. Im Gegensatz zu filter(), wo du Bedingungen definierst, basiert slice() auf der Zeilenposition. Du kannst Zeilen entweder durch Angabe einer spezifischen Zeilenposition oder eines Bereichs von Zeilen auswählen.
+
 ```{r}
 
 # dplyr::slice()
@@ -155,29 +292,122 @@ We might use it just after reading in files if there are junk rows at the header
 mtcars # this should have 32 rows
 slice(mtcars, 2:n()) # this should have 31 rows
 
+
+
+
+# Den mtcars-Datensatz betrachten
+head(mtcars)
+
+# Auswahl der ersten 5 Zeilen mit slice()
+mtcars_slice <- slice(mtcars, 1:5)
+
+# Ausgabe der gefilterten Zeilen
+mtcars_slice
+
+mtcars <- mtcars  # mtcars hat 32 Zeilen
+slice(mtcars, 2:n())  # Dies entfernt die erste Zeile und gibt 31 Zeilen zurück
+
+
+slice(mtcars, c(1, 3, 5))  # Wählt die 1., 3. und 5. Zeile aus
+
+
+mtcars %>%
+  arrange(desc(wt)) %>%
+  slice(1:3)  # Wählt die drei schwersten Autos
+
+
 ```
 
 ## select
+
+Die Funktion select() aus dem dplyr-Paket wird in R verwendet, um spezifische Spalten eines DataFrames auszuwählen. Diese Funktion ist äußerst praktisch, wenn du nur bestimmte Variablen (Spalten) für deine Analyse verwenden möchtest oder wenn du irrelevante Spalten schnell entfernen möchtest.
+
+Mit select() kannst du gezielt Spalten eines DataFrames auswählen oder entfernen, indem du einfach die Namen der gewünschten Spalten angibst. Die Reihenfolge, in der du die Spalten angibst, bestimmt auch die Reihenfolge der Spalten im Ergebnis.
+
+select() bietet auch die Möglichkeit, Spalten nach bestimmten Mustern oder Bedingungen auszuwählen. Hier einige nützliche Möglichkeiten: starts_with, ends_with, matches, contains, oder mit Negationszeichen
 
 ```{r}
 
 # dplyr::select()
 
+
+# Den mtcars-Datensatz betrachten
+head(mtcars)
+
+# Auswahl spezifischer Spalten mit select()
+mtcars_selected <- select(mtcars, mpg, hp, wt)
+
+# Ausgabe der ausgewählten Spalten
+head(mtcars_selected)
+
+
+mtcars %>%
+  select(mpg, hp, wt) %>%
+  filter(hp > 100)
+
+
 ```
 
 ## rename
+
+Die Funktion rename() aus dem dplyr-Paket in R wird verwendet, um die Spaltennamen eines DataFrames umzubenennen. Sie bietet eine sehr einfache und lesbare Möglichkeit, gezielt einzelne Spaltennamen zu ändern, ohne alle Spalten des DataFrames anzupassen.
+
+Mit rename() kannst du bestimmte Spalten in einem DataFrame umbenennen. Der Rest des DataFrames bleibt dabei unverändert. Du gibst dabei die neuen Namen als Argumente an und setzt sie mit den bisherigen Spaltennamen in Beziehung.
+
+Während select() verwendet wird, um Spalten auszuwählen oder aus dem DataFrame zu entfernen, ändert rename() nur die Namen der Spalten und lässt den Rest des DataFrames unangetastet.
 
 ```{r}
 
 # dplyr::rename()
 
+library(dplyr)
+
+# Den mtcars-Datensatz betrachten
+head(mtcars)
+
+# Umbenennen der Spalte 'mpg' in 'miles_per_gallon'
+mtcars_renamed <- rename(mtcars, miles_per_gallon = mpg)
+
+# Ausgabe der umbenannten Spalten
+head(mtcars_renamed)
+
+mtcars_renamed <- rename(mtcars, miles_per_gallon = mpg, horsepower = hp)
+
+
+
 ```
 
 ## mutate
 
+Die Funktion mutate() aus dem dplyr-Paket in R wird verwendet, um neue Spalten zu einem DataFrame hinzuzufügen oder bestehende Spalten zu verändern. Diese Funktion ist äußerst nützlich, wenn du neue Variablen berechnen oder bestehende Werte basierend auf anderen Spalten verändern möchtest.
+
+Mit mutate() kannst du neue Variablen erstellen oder bestehende Spalten im DataFrame verändern, indem du Berechnungen oder Transformationen auf vorhandenen Spalten anwendest. Die neue Spalte wird dabei an den ursprünglichen DataFrame angehängt.
+
 ```{r}
 
 # dplyr::mutate()
+
+
+# Den mtcars-Datensatz betrachten
+head(mtcars)
+
+# Hinzufügen einer neuen Spalte, die das Verhältnis von Gewicht zu Pferdestärke berechnet
+mtcars_mutated <- mutate(mtcars, wt_hp_ratio = wt / hp)
+
+# Ausgabe des DataFrames mit der neuen Spalte
+head(mtcars_mutated)
+
+mtcars_mutated <- mutate(mtcars, wt_hp_ratio = wt / hp, mpg_km = mpg * 1.60934)
+
+
+mtcars_mutated <- mutate(mtcars, mpg = mpg * 1.60934)
+
+
+mtcars %>%
+  mutate(wt_hp_ratio = wt / hp) %>%
+  filter(wt_hp_ratio > 0.1)
+
+
 
 ```
 
