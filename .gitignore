@@ -3,3 +3,5 @@
 
 local_only/
 data/AMP study/raw/data_demographics_raw_messy_hide.csv
+*.csv
+week 3/code/data/processed/data_processed.csv
