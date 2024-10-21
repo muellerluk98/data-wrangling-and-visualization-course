@@ -33,6 +33,8 @@ library(stringr)
 
 # Get data
 
+
+
 ```{r}
 
 # # demographics
@@ -180,8 +182,37 @@ Create an exclusion variable `exclude_amp_performance` based on AMP performance:
 Create an exclusion variable `exclude_amp_completeness` based on the AMP having the right number of trials.
 
 ```{r}
+# Berechne die Anzahl der Trials pro subject
+data_amp_raw |>
+  group_by(subject) |>
+  summarise(trial_count = n())
+
+```
+
+
+```{r}
 
 #data_amp_performance_criteria <- data_amp_raw 
+
+library(dplyr)
+
+# Setze die Kriterien für die Ausschlüsse
+data_amp_performance_criteria <- data_amp_raw |>
+  group_by(subject) |>
+  mutate(
+    # Kriterium für Performance: Wenn mehr als 10% der Trials < 100ms, dann "exclude", sonst "include"
+    exclude_amp_performance = ifelse(sum(latency < 100) / n() > 0.1, "exclude", "include"),
+    
+    # Kriterium für Vollständigkeit: Wenn die Anzahl der Trials nicht der erwarteten Anzahl entspricht, "exclude", sonst "include"
+    # Hier nehme ich an, dass jeder subject eine bestimmte Anzahl an Trials haben sollte, z.B. 100 Trials
+    # Falls die erwartete Anzahl anders ist, kannst du diese Zahl anpassen
+    expected_trials = 82,  # Hier kannst du die richtige Anzahl anpassen
+    exclude_amp_completeness = ifelse(n() == expected_trials, "include", "exclude")
+  ) |>
+  ungroup()  # Gruppierung aufheben, um wieder mit dem gesamten Datensatz zu arbeiten
+
+# Das Ergebnis enthält nun die Variablen `exclude_amp_performance` und `exclude_amp_completeness`.
+
 
 ```
 
@@ -193,6 +224,19 @@ Create a mean score for each participant of the three self-report items.
 
 #data_selfreport_trial_level <- data_selfreport_raw 
 
+# Filtere Zeilen, in denen die Spalte `response` numerische Werte enthält
+data_selfreport_raw <- data_selfreport_raw |>
+  filter(!is.na(as.numeric(response))) |>
+  mutate(response = as.numeric(response))
+
+data_selfreport_trial_level <- data_selfreport_raw |>
+  filter(trialcode %in% c("like", "prefer", "positive")) |>
+  group_by(subject) |>
+  summarise(
+    mean_self_report = mean(response, na.rm = TRUE)
+  )
+
+
 ```
 
 # Affect Misattribution Procedure
@@ -202,6 +246,25 @@ Create an overall AMP bias score. Score each trial as having been evalauted as c
 ```{r}
 
 #data_amp_score_congruence <- data_amp_raw 
+library(dplyr)
+
+# Berechne den AMP Bias Score pro subject
+data_amp_score_congruence <- data_amp_raw |>
+  mutate(
+    # Definiere eine neue Spalte `congruent`, die 1 ist, wenn die Antwort kongruent ist, sonst 0
+    congruent = case_when(
+      trialcode == "prime_positive" & correct == 1 ~ 1,
+      TRUE ~ 0
+    )
+  ) |>
+  group_by(subject) |>
+  summarise(
+    # Berechne den Anteil der kongruenten Antworten
+    amp_bias_score = mean(congruent, na.rm = TRUE)
+  )
+
+# Der resultierende Datensatz enthält für jeden Teilnehmer den AMP Bias Score.
+
 
 ```
 
@@ -215,6 +278,21 @@ Flag all duplicates for exclusion.
 
 # data_processed_before_exclusions 
 
+library(dplyr)
+
+# Kombiniere die Dataframes basierend auf der Spalte `subject`
+data_processed_before_exclusions <- data_amp_performance_criteria |>
+  full_join(data_selfreport_trial_level, by = "subject") |>
+  full_join(data_amp_score_congruence, by = "subject")
+
+# Markiere alle Duplikate für den Ausschluss
+data_processed_before_exclusions <- data_processed_before_exclusions |>
+  mutate(duplicate_flag = duplicated(subject))
+
+# Überprüfe den kombinierten Datensatz
+head(data_processed_before_exclusions)
+
+
 ```
 
 # Define master exclusion variable
@@ -222,6 +300,24 @@ Flag all duplicates for exclusion.
 ```{r}
 
 #data_processed <- data_processed_before_exclusions
+
+library(dplyr)
+
+# Definiere die Master-Ausschlussvariable
+data_processed <- data_processed_before_exclusions |>
+  mutate(
+    # Master Exclusion: Wenn ein Kriterium zutrifft, wird "exclude" gesetzt, sonst "include"
+    master_exclusion = case_when(
+      duplicate_flag == TRUE ~ "exclude",  # Duplikate ausschließen
+      exclude_amp_performance == "exclude" ~ "exclude",  # AMP Performance-Kriterium
+      exclude_amp_completeness == "exclude" ~ "exclude",  # AMP Vollständigkeit
+      TRUE ~ "include"  # Andernfalls wird "include" gesetzt
+    )
+  )
+
+# Überprüfe das Ergebnis
+head(data_processed)
+
 
 ```
 
@@ -234,6 +330,18 @@ Flag all duplicates for exclusion.
 # 
 # # save data to disk in that dir
 # write_csv(data_processed, "../data/processed/data_processed.csv")
+
+# Überprüfe, ob das Verzeichnis existiert, und erstelle es, falls nicht
+if(!dir.exists("../data/processed/")) {
+  dir.create("../data/processed/")
+}
+
+# Schreibe die verarbeiteten Daten in eine CSV-Datei
+write_csv(data_processed, "../data/processed/data_processed.csv")
+
+# Optional: Bestätige, dass die Datei erfolgreich geschrieben wurde
+cat("Datei wurde erfolgreich als data_processed.csv gespeichert.")
+
 
 ```
 
