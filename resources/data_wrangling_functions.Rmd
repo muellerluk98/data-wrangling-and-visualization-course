@@ -1,6 +1,6 @@
 ---
 title: "Important functions for data wrangling"
-author: "Template: Ian Hussey; Content: [student name]"
+author: "Template: Ian Hussey; Content: [Lukas Müller]"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
@@ -241,6 +241,7 @@ colnames(df_clean)
 ```
 
 ## filter
+Filter is for rows (horizonal)
 
 Die Funktion filter() aus dem dplyr-Paket ist eine der wichtigsten Funktionen in der Datenmanipulation in R. Sie wird verwendet, um Zeilen aus einem DataFrame basierend auf bestimmten Bedingungen auszuwählen oder zu "filtern".
 
@@ -319,6 +320,7 @@ mtcars %>%
 ```
 
 ## select
+Does choose some of the variables. You can also exclude some variables with select, there you would have to add a minus sign. If you want exclude several variables you have to type !c(). Select is for columns (vertical)
 
 Die Funktion select() aus dem dplyr-Paket wird in R verwendet, um spezifische Spalten eines DataFrames auszuwählen. Diese Funktion ist äußerst praktisch, wenn du nur bestimmte Variablen (Spalten) für deine Analyse verwenden möchtest oder wenn du irrelevante Spalten schnell entfernen möchtest.
 
@@ -327,6 +329,8 @@ Mit select() kannst du gezielt Spalten eines DataFrames auswählen oder entferne
 select() bietet auch die Möglichkeit, Spalten nach bestimmten Mustern oder Bedingungen auszuwählen. Hier einige nützliche Möglichkeiten: starts_with, ends_with, matches, contains, oder mit Negationszeichen
 
 ```{r}
+
+sele
 
 # dplyr::select()
 
