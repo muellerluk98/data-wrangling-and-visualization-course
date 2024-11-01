@@ -11,6 +11,7 @@ output:
     toc_float: yes
 ---
 
+this chunk is written so that in the end the whole code can be knitted and put into an html file
 ```{r, include=FALSE}
 
 knitr::opts_chunk$set(message = FALSE,
@@ -19,7 +20,7 @@ knitr::opts_chunk$set(message = FALSE,
 ```
 
 # Dependencies
-
+Here we are loading all necessary packages
 ```{r}
 
 library(dplyr)
@@ -36,13 +37,21 @@ library(kableExtra)
 
 For any function in a loaded package, simply type `?` before the function's name to call up the help menu. This helps you understand the function's purpose, its arguments, and outputs.
 
+Usually you get a short description, informations about the syntax and usage, information about the arguments/elements this function requires. You can also get informations about whole packages like dplyr.
+
 ```{r}
 
 ?read_csv
+?mutate
+?dplyr
+?join
+?select
 
 ```
 
-- Why use {reader}'s `read_csv()` over the base R `read.csv()`? Because `read_csv()` is more explicit about what assumption it is making about column types, and prints warning messages about what it has assumed.
+- Why use {reader}'s `read_csv()` over the base R `read.csv()`? 
+
+Because `read_csv()` is more explicit about what assumption it is making about column types, and prints warning messages about what it has assumed.
 
 # Relative vs. absolute paths & loading data
 
