@@ -125,10 +125,6 @@ dat_gender <- data_demographics_raw |>
 
 ```{r}
 
-dat_combined <- dat_unique_id %>%
-  inner_join(dat_age, by = "unique_id") %>%
-  inner_join(dat_gender, by = "unique_id")
-
 # dat_unique_id
 # dat_age
 # dat_gender
@@ -211,10 +207,10 @@ data_selfreport_tidied <- data_selfreport_raw |>
   select(unique_id, item_type, response) |>
   filter(item_type != "instructions")
 
+
+
 ```
 
-
-## Homework (alle Schritte seperat)
 TODO - 14/10
 
 - replace all non 1-7 numbers in `response` with NA
@@ -224,57 +220,24 @@ TODO - 14/10
 - use: mutate, group_by, summarize, _join
 
 ```{r}
+data_selfreport_tidied %>% 
+  count(response)   # this tells you all the answers that were given and how often
 
-# replace all non 1-7 numbers in `response` with NA
-selfreport <- data_selfreport_tidied %>% 
-  group_by(unique_id) %>% 
-  mutate(exclude.list = ifelse(response %in% c(1:7), "include","exclude")) %>% 
-  ungroup()
+temp <- data_selfreport_tidied %>% 
+  mutate(response = ifelse(response %in% seq(1,7), response, NA))    #  like that we only keep answers with a value from 1 to 7
 
-# count number of unique_ids with correct/wrong number of responses
-counter <- selfreport %>% 
-  count(exclude.list)
+temp <- data_selfreport_tidied %>% 
+  mutate(response = ifelse(response == "Ctrl+'B'", NA, response)) %>% 
+  mutate(response = as.numeric(response)) #  like that we exclude the concrete response we don't want
 
-# Exclude them
-selfreport <- selfreport %>% 
-  filter(exclude.list != "exclude")
+
+temp <- data_selfreport_tidied %>% 
+  mutate(response = as.numeric(ifelse(response %in% seq(1,7), response, NA)))     # elegante Lösung 
+
+mean(temp$response, na.rm = TRUE)
 
 
 ```
-
-
-## Homework (alle Schritte seperat aber mit den vorgegebenen funktionen)
-
-```{r}
-
-# everywhere there isnt 1-7 in ´response´, write NA
-selfreport <- data_selfreport_tidied %>% 
-  mutate(response = ifelse(response %in% 1:7, response, NA))
-
-# count the people who got 1-7 in ´response´ and the people that don´t
-selfreport_summary <- selfreport %>%
-  group_by(unique_id) %>%
-  summarize(correct_responses = sum(!is.na(response)),  
-            total_responses = n()) %>%                  
-  mutate(response_status = ifelse(correct_responses == total_responses, "correct", "wrong"))
-
-# exclude the people who doesnt got 1-7 in ´response´
-selfreport_filtered <- selfreport %>%
-  inner_join(selfreport_summary %>% filter(response_status == "correct"), by = "unique_id")
-
-# check if the exclusion worked
-check_exclusions <- selfreport_filtered %>%
-  group_by(unique_id) %>%
-  summarize(correct_responses = sum(!is.na(response)),
-            total_responses = n()) %>%
-  mutate(response_status = ifelse(correct_responses == total_responses, "correct", "wrong"))
-
-# show the number of people that weren´t excluded throughout this chunk
-table(check_exclusions$response_status)
-
-```
-
-
 
 
 # Score measures
