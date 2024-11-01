@@ -61,6 +61,15 @@ This data comes from a real study on implicit and self-reported evaluations. The
 
 \TODO add explainer - breaks between machines, breaks between mac and windows
 
+The function getwd() shows you an absolute filepath which leads to your current working directory while the function setwd() is designed to set a new working directory. It is better to never change working directories so that the code also runs on other machines. It is better to save stuff on GitHub and then using relative instead of absolute paths so that also other people can work on the code. If someone sets a new working directory some informations/data may be lost because maybe on other machines there isn't the whole data in this ''new'' working directory
+
+```{r}
+?getwd
+?setwd
+```
+
+
+
 
 ## Use relative paths
 
