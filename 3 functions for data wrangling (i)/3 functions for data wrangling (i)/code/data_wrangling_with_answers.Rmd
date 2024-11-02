@@ -121,17 +121,17 @@ so the answer is that there are different amounts of rows in the dataframes beca
 
 The numbers are round hahah?!
 
-# The pipe (%>% or %>%) 
+# The pipe (%>% or %>%) --> shouldn´t there be this sign |>
 
 `%>%` is the original pipe created for the {magrittr} package and used throughout the tidyverse packages. It is slightly slower but also more flexible.
 
-`%>%` is a version of the pipe more recently added to base-R. It is slightly faster but less flexible. 
+`%>%` is a version of the pipe more recently added to base-R. It is slightly faster but less flexible. --> shouldn´t there be this sign |>
 
 If you're not sure, it's easier to use `%>%`. 
 
 ## What is the pipe?
 
-???
+The pipe is a very useful explanation in R because you can tell the programme to take the output of one codeline as the input for the upcoming line.
 
 ```{r}
 
@@ -148,18 +148,22 @@ If you're not sure, it's easier to use `%>%`.
 
 ## Why use the pipe?
 
+We use the pipe to make our code look way more smoother. By using the pipe we can keep the code compact and we can make one order with many steps.
+
 
 
 ```{r}
 
 # use a function without the pipe
-???
+data_amp_raw2 <- clean_names(data_amp_raw)
 
 # use a function with the pipe. the output of what is left of the pipe is used as the input to the right of the pipe, usually as the first argument or the data argument.
-???
+
+data_amp_raw3 <- data_amp_raw %>% 
+  clean_names()
 
 # check they produce identical results
-???
+identical(data_amp_raw2, data_amp_raw3)
 
 ```
 
