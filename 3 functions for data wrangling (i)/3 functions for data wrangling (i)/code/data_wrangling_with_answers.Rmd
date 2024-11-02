@@ -75,6 +75,12 @@ The function getwd() shows you an absolute filepath which leads to your current 
 
 Either through Rmarkdown files, Quarto files, or in regular .R files using the {here} library (see https://here.r-lib.org/).
 
+This chunk loads the data with a relative path: The relative path explained:
+.. = go one level back
+data = select folder data
+raw = select folder raw
+data_demographics_raw.csv = choose this file
+
 ```{r}
 
 # demographics data
@@ -103,7 +109,17 @@ nrow(data_amp_raw)
 ```
 
 - Why are there different number of rows in the three data frames when this data all comes from the same participants? 
+
+To answer this questions i would first look at the dataframes when i loaded them in R. There we see:
+data_amp_raw has 8224 observations of 10 variables
+data_demographics_raw has 200 observations of 17 variables
+data_selfreport_raw has 392 observations of 17 variables
+additionally we recognised that every dataframe got a subject column.
+so the answer is that there are different amounts of rows in the dataframes because the number of rows per participant differs in all dataframes.
+
 - Why are the numbers not round?
+
+The numbers are round hahah?!
 
 # The pipe (%>% or %>%) 
 
