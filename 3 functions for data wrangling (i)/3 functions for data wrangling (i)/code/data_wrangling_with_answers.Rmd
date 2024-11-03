@@ -589,7 +589,8 @@ data_amp_test_trials_with_fast_trials <- data_amp_test_trials %>%
   mutate(fast_trial = latency < 100)
 
 data_amp_test_trials_with_fast_trials_2 <- data_amp_test_trials %>%
-  mutate(latency = ifelse(latency == 100, NA, latency))
+  mutate(fast_trial = ifelse(latency < 100, TRUE, FALSE))
+
 
 ```
 
@@ -633,15 +634,15 @@ Use `ifelse()` and `%in%` inside `mutate()` to change values other than the Like
 
 ```{r}
 
-# what values are present?
-data_selfreport_trials %>%
+# what values are present? --> here we see that ther was one person who answered Ctrl+'B'
+data_selfreport_trimmed %>%
   count(response)
 
 # what type of data is the response column?
-class(data_selfreport_trials$response)
+class(data_selfreport_trimmed$response)
 
-# remove non Likert values
-data_selfreport_tidy <- data_selfreport_trials %>%
+# remove non Likert values and make the response variable numeric
+data_selfreport_tidy <- data_selfreport_trimmed %>%
   mutate(response = ifelse(response %in% c("1", "2", "3", "4", "5", "6", "7"), response, NA),
          response = as.numeric(response))
 
@@ -649,15 +650,19 @@ data_selfreport_tidy <- data_selfreport_trials %>%
 data_selfreport_tidy %>%
   count(response)
 
-class(data_selfreport_tidy$response)
+class(data_selfreport_tidy$response) # sanity check if the values are 4real numeric
 
 ```
 
 What other ways are there of implementing this mutate, e.g., without using `%in%`? What are the pros and cons of each?
 
 ```{r}
+?ifelse
+
 
 # write examples here
+
+
 
 ```
 
