@@ -305,6 +305,9 @@ data_amp_renamed <- data_amp_clean_names %>%
 
 Not all variables are useful to you. An early step in any data wrangling is to drop the columns that you don't need.
 
+filter is for rows
+select is for columns
+
 ```{r}
 
 data_demographics_selected_columns <- data_demographics_renamed %>%
@@ -450,7 +453,7 @@ example_multiple_criteria_1 <- data_amp_trimmed %>%
 example_multiple_criteria_2 <- data_amp_trimmed %>%
   filter(block != "test" | correct == 1)
 
-# note that these provide different results - make sure you understand why
+# note that these provide different results - make sure you understand why --> there is a difference because in example_multiple_criteria_1 we filtered for rows that have the two following properties: - NOT have ''test'' in the block column AND have 1 in the correct column. in example_multiple_criteria_2 we filtered rows that fulfill AT LEAST one of those criteria. so the _2 should have more rows than the _1
 identical(example_multiple_criteria_1, example_multiple_criteria_2)
 
 ```
@@ -461,6 +464,13 @@ Filter the self reports data frame to remove the instructions. Filter the AMP da
 
 ```{r}
 
+# Filter the self reports & remove the instructions
+filtered_selfreports <- data_selfreport_trimmed %>% 
+  filter(item != "instructions")
+
+# Filter the AMP data & remove the practice blocks and the instruction trials.
+filtered_amp <- data_amp_trimmed %>% 
+  filter(block != "practice")
 
 
 ```
@@ -468,8 +478,10 @@ Filter the self reports data frame to remove the instructions. Filter the AMP da
 # Check your learning
 
 What is the difference between select and filter?
+- we use select for columns and filter for rows
 
 Which is for rows and which is for columns?
+look above
 
 # Mutating: creating new columns or changing the contents of existing ones
 
