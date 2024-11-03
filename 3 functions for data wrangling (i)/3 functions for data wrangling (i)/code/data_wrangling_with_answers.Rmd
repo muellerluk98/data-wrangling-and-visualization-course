@@ -168,6 +168,7 @@ identical(data_amp_raw2, data_amp_raw3)
 ```
 
 The utility of this becomes more obvious when there are many steps:
+Here we see that the pipe gives us a way more beautiful and understandable embodiement of our code. that will also help you to reduce errors because it's way more clearer
 
 ```{r}
 
@@ -199,6 +200,11 @@ identical(example2_without_pipe, example2_with_pipe)
 It is almost always useful to start by converting all column names to ones that play nice with R/tidyverse and which use the same naming convention (e.g., snake_case, which is standard in tidyverse).
 
 How would you bring up the help menu to understand how `janitor::clean_names()` works?
+- i would simply try to write ?clean_names or ?janitor or ?janitor::clean_names()
+?clean_names
+?janitor::clean_names()
+?janitor
+
 
 Rewrite each of the below to use the pipe.
 
@@ -206,9 +212,28 @@ Rewrite each of the below to use the pipe.
 
 data_demographics_clean_names <- clean_names(data_demographics_raw) 
 
+data_demographics_clean_names2 <- data_demographics_raw %>% 
+  clean_names()
+
+identical(data_demographics_clean_names, data_demographics_clean_names2)
+
+
+
 data_selfreport_clean_names <- clean_names(data_selfreport_raw) 
 
+data_selfreport_clean_names2 <- data_selfreport_raw %>% 
+  clean_names()
+
+identical(data_selfreport_clean_names, data_selfreport_clean_names2)
+
+
+
 data_amp_clean_names <- clean_names(data_amp_raw) 
+
+data_amp_clean_names2 <- data_amp_raw %>% 
+  clean_names()
+
+identical(data_amp_clean_names, data_amp_clean_names2)
 
 ```
 
@@ -227,9 +252,31 @@ data_demographics_clean_names %>%
   colnames() %>%
   dput()
 
+
+
 #data_selfreport_clean_names
 
+# print all column names
+colnames(data_selfreport_clean_names)
+# print all column names as a vector
+dput(colnames(data_selfreport_clean_names))
+# print all column names as a vector using the pipe
+data_selfreport_clean_names %>%
+  colnames() %>%
+  dput()
+
+
+
 #data_amp_clean_names
+
+# print all column names
+colnames(data_amp_clean_names)
+# print all column names as a vector
+dput(colnames(data_amp_clean_names))
+# print all column names as a vector using the pipe
+data_amp_clean_names %>%
+  colnames() %>%
+  dput()
 
 ```
 
