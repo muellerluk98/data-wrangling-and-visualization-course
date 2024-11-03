@@ -491,6 +491,9 @@ look above
 
 ```{r}
 
+data_amp_test_trials <- data_amp_trimmed %>% 
+  select(unique_id, latency)
+
 # mutating new variables
 example_1 <- data_amp_test_trials %>%
   mutate(latency_plus_1 = latency + 1)
@@ -578,8 +581,15 @@ Try doing this with a simple logical test of whether latency < 100. You can do t
 
 ```{r}
 
+?ifelse
+?mutate
+
+
 data_amp_test_trials_with_fast_trials <- data_amp_test_trials %>%
   mutate(fast_trial = latency < 100)
+
+data_amp_test_trials_with_fast_trials_2 <- data_amp_test_trials %>%
+  mutate(latency = ifelse(latency == 100, NA, latency))
 
 ```
 
