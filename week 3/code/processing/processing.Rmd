@@ -38,18 +38,18 @@ library(stringr)
 ```{r}
 
 # # demographics
-# data_demographics_raw_messy <- read_csv("../data/raw/data_demographics_raw_messy.csv", skip = 2) |>
+# data_demographics_raw_messy <- read_csv(".../data/raw/data_demographics_raw_messy.csv", skip = 2) |>
 #   janitor::clean_names()
 
-data_demographics_raw <- read_csv("../data/raw/data_demographics_raw.csv") |>
+data_demographics_raw <- read_csv("../../data/raw/data_demographics_raw.csv") |>
   janitor::clean_names()
 
 # self report measure
-data_selfreport_raw <- read_csv("../data/raw/data_selfreport_raw.csv") |>
+data_selfreport_raw <- read_csv("../../data/raw/data_selfreport_raw.csv") |>
   janitor::clean_names()
 
 # affect attribution procedure
-data_amp_raw <- read_csv("../data/raw/data_amp_raw.csv") |>
+data_amp_raw <- read_csv("../../data/raw/data_amp_raw.csv") |>
   janitor::clean_names()
 
 ```
